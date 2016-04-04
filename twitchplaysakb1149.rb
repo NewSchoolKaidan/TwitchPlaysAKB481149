@@ -72,7 +72,7 @@ class TwitchPlaysAKB1149
   def run
     until socket.eof? do
       activate_ppsspp_window unless ppsspp_window_activated?
-      message =  socket.gets
+      message = socket.gets
 
       if message == PING_MESSAGE
         relay_message PONG_MESSAGE
