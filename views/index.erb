@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Twitch Oauth</title>
+  </head>
+
+  <body id="superbody64">
+    <form name="oauth-generator-form" id="oauth-generator">
+      Client ID <input id="client-id" type="text" name="client-id" required>
+      <br><br>
+
+      Select all the necessary scopes: 
+      <br><br> 
+      <input type="checkbox" name="user_read" value="user_read"> Read access to non-public user information, such as email address.
+      <br>
+      <input type="checkbox" name="user_blocks_edit" value="user_blocks_edit"> Ability to ignore or unignore on behalf of a user.
+      <br>
+      <input type="checkbox" name="user_blocks_read" value="user_blocks_read"> Read access to a user's list of ignored users.
+      <br>
+      <input type="checkbox" name="user_follows_edit" value="user_follows_edit"> Access to manage a user's followed channels.
+      <br>
+      <input type="checkbox" name="channel_read" value="channel_read"> Read access to non-public channel information, including email address and stream key.
+      <br>
+      <input type="checkbox" name="channel_editor" value="channel_editor"> Write access to channel metadata (game, status, etc).
+      <br>
+      <input type="checkbox" name="channel_commercial" value="channel_commercial"> Access to trigger commercials on channel.
+      <br>
+      <input type="checkbox" name="channel_stream" value="channel_stream"> Ability to reset a channel's stream key.
+      <br>
+      <input type="checkbox" name="channel_subscriptions" value="channel_subscriptions"> Read access to all subscribers to your channel.
+      <br>
+      <input type="checkbox" name="user_subscriptions" value="user_subscriptions"> Read access to subscriptions of a user.
+      <br>
+      <input type="checkbox" name="channel_check_subscription" value="channel_check_subscription"> Read access to check if a user is subscribed to your channel.
+      <br>
+      <input type="checkbox" name="chat_login" value="chat_login"> Ability to log into chat and send messages.
+
+      <br><br>
+      <input type="submit" value="Generate URL to create OAuth token">
+    </form>
+
+    <br><br>
+
+    <script>
+      var form = document.getElementById("oauth-generator");
+      
+      form.addEventListener("submit", function(event){
+        event.preventDefault();
+
+        var scopes = [];
+        var clientId = document.getElementById("client-id").value;
+
+        var scopeCheckboxes = document.querySelectorAll("input[type='checkbox']");
+
+        for (i = 0; i < scopeCheckboxes.length; i++) {
+          if (scopeCheckboxes[i].checked === true) {
+            scopes.push(scopeCheckboxes[i].value)
+          }
+        }
+
+        var body = document.getElementById("superbody64");
+        var oldOauthLink = document.getElementById("oauth-link");
+
+        if (oldOauthLink != null){ body.removeChild(oldOauthLink) }
+
+        var oauthLink = document.createElement("a");
+
+        oauthLink.id = "oauth-link";
+        oauthLink.text = "Click to generate OAuth token for client id: " + clientId;
+        oauthLink.href = "https://api.twitch.tv/kraken/oauth2/authorize" +
+          "?response_type=token" + 
+          "&client_id=" + clientId + 
+          "&redirect_uri=http://localhost:4567/twitch" +
+          "&scope=" + scopes.join("+")
+        
+        body.appendChild(oauthLink);
+      });
+    </script>
+  </body>
+</html>
