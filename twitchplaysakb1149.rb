@@ -1,5 +1,6 @@
 require "socket"
 require "dotenv"
+
 Dotenv.load
 
 class String
@@ -54,7 +55,18 @@ class TwitchPlaysAKB1149
     "L".freeze => "q".freeze,
     "l".freeze => "q".freeze,
     "R".freeze => "w".freeze,
-    "w".freeze => "w".freeze,
+    "aup".freeze => "i".freeze,
+    "analog up".freeze => "i".freeze,
+    "analogup".freeze => "i".freeze,
+    "adown".freeze => "k".freeze,
+    "analog down".freeze => "k".freeze,
+    "analogdown".freeze => "k".freeze,
+    "aleft".freeze => "j".freeze,
+    "analog left".freeze => "j".freeze,
+    "analogleft".freeze => "j".freeze,
+    "aright".freeze => "l".freeze,
+    "analog right".freeze => "l".freeze,
+    "analogright".freeze => "l".freeze
   }.freeze
 
   def initialize(server, port, channel)
@@ -63,8 +75,8 @@ class TwitchPlaysAKB1149
     @log = File.open("chat.log", "w")
 
     activate_ppsspp_window
-    relay_message "PASS oauth:#{ENV[:OAUTH_TOKEN]}"
-    relay_message "NICK #{ENV[:TWITCH_USERNAME]}"
+    relay_message "PASS oauth:#{ENV["OAUTH_TOKEN"]}"
+    relay_message "NICK #{ENV["TWITCH_USERNAME"]}"
     relay_message "JOIN ##{channel}"
     relay_message "PRIVMSG ##{channel} :おれ、参上・・・！！"
   end
@@ -114,7 +126,7 @@ class TwitchPlaysAKB1149
   end
 
   def ppsspp_window_ids
-    `xdotools search --class PPSSPP`.split("\n")
+    `xdotool search --class PPSSPP`.split("\n")
   end
 
   def activate_ppsspp_window
