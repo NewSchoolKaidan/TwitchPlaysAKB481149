@@ -7,66 +7,70 @@ class String
   def squish
     self.strip.gsub(/\s{2,}/, " ")
   end
+
+  def byte_array
+    self.bytes.to_a.freeze
+  end
 end
 
 class TwitchPlaysAKB1149
   PING_MESSAGE = "PING :tmi.twitch.tv".freeze
   PONG_MESSAGE = "PONG :tmi.twitch.tv".freeze
   COMMAND_MAP = {
-    "up".freeze => "Up".freeze,
-    "Up".freeze => "Up".freeze,
-    "上".freeze => "Up".freeze,
-    "うえ".freeze => "Up".freeze,
-    "down".freeze => "Down".freeze,
-    "Down".freeze => "Down".freeze,
-    "下".freeze => "Down".freeze,
-    "した".freeze => "Down".freeze,
-    "left".freeze => "Left".freeze,
-    "left".freeze => "Left".freeze,
-    "左".freeze => "Left".freeze,
-    "ひだり".freeze => "Left".freeze,
-    "right".freeze => "Right".freeze,
-    "Right".freeze => "Right".freeze,
-    "右".freeze => "Right".freeze,
-    "みぎ".freeze => "Right".freeze,
-    "circle".freeze => "x".freeze,
-    "まる".freeze => "x".freeze,
-    "丸".freeze => "x".freeze,
-    "○".freeze => "x".freeze,
-    "◯".freeze => "x".freeze,
-    "x".freeze => "z".freeze,
-    "ばつ".freeze => "z".freeze,
-    "バツ".freeze => "z".freeze,
-    "×".freeze => "z".freeze,
-    "✕".freeze => "z".freeze,
-    "❌".freeze => "z".freeze,
-    "square".freeze => "a".freeze,
-    "しかく".freeze => "a".freeze,
-    "四角".freeze => "a".freeze,
-    "□".freeze => "a".freeze,
-    "triangle".freeze => "s".freeze,
-    "三角".freeze => "s".freeze,
-    "さんかく".freeze => "s".freeze,
-    "△".freeze => "s".freeze,
-    "START".freeze => "space".freeze,
-    "start".freeze => "space".freeze,
-    "SELECT".freeze => "Return".freeze,
-    "select".freeze => "Return".freeze,
-    "L".freeze => "q".freeze,
-    "l".freeze => "q".freeze,
-    "R".freeze => "w".freeze,
-    "aup".freeze => "i".freeze,
-    "analog up".freeze => "i".freeze,
-    "analogup".freeze => "i".freeze,
-    "adown".freeze => "k".freeze,
-    "analog down".freeze => "k".freeze,
-    "analogdown".freeze => "k".freeze,
-    "aleft".freeze => "j".freeze,
-    "analog left".freeze => "j".freeze,
-    "analogleft".freeze => "j".freeze,
-    "aright".freeze => "l".freeze,
-    "analog right".freeze => "l".freeze,
-    "analogright".freeze => "l".freeze
+    "up".byte_array => "Up".freeze,
+    "Up".byte_array => "Up".freeze,
+    "上".byte_array => "Up".freeze,
+    "うえ".byte_array => "Up".freeze,
+    "down".byte_array => "Down".freeze,
+    "Down".byte_array => "Down".freeze,
+    "下".byte_array => "Down".freeze,
+    "した".byte_array => "Down".freeze,
+    "left".byte_array => "Left".freeze,
+    "left".byte_array => "Left".freeze,
+    "左".byte_array => "Left".freeze,
+    "ひだり".byte_array => "Left".freeze,
+    "right".byte_array => "Right".freeze,
+    "Right".byte_array => "Right".freeze,
+    "右".byte_array => "Right".freeze,
+    "みぎ".byte_array => "Right".freeze,
+    "circle".byte_array => "x".freeze,
+    "まる".byte_array => "x".freeze,
+    "丸".byte_array => "x".freeze,
+    "○".byte_array => "x".freeze,
+    "◯".byte_array => "x".freeze,
+    "x".byte_array => "z".freeze,
+    "ばつ".byte_array => "z".freeze,
+    "バツ".byte_array => "z".freeze,
+    "×".byte_array => "z".freeze,
+    "✕".byte_array => "z".freeze,
+    "❌".byte_array => "z".freeze,
+    "square".byte_array => "a".freeze,
+    "しかく".byte_array => "a".freeze,
+    "四角".byte_array => "a".freeze,
+    "□".byte_array => "a".freeze,
+    "triangle".byte_array => "s".freeze,
+    "三角".byte_array => "s".freeze,
+    "さんかく".byte_array => "s".freeze,
+    "△".byte_array => "s".freeze,
+    "START".byte_array => "space".freeze,
+    "start".byte_array => "space".freeze,
+    "SELECT".byte_array => "Return".freeze,
+    "select".byte_array => "Return".freeze,
+    "L".byte_array => "q".freeze,
+    "l".byte_array => "q".freeze,
+    "R".byte_array => "w".freeze,
+    "aup".byte_array => "i".freeze,
+    "analog up".byte_array => "i".freeze,
+    "analogup".byte_array => "i".freeze,
+    "adown".byte_array => "k".freeze,
+    "analog down".byte_array => "k".freeze,
+    "analogdown".byte_array => "k".freeze,
+    "aleft".byte_array => "j".freeze,
+    "analog left".byte_array => "j".freeze,
+    "analogleft".byte_array => "j".freeze,
+    "aright".byte_array => "l".freeze,
+    "analog right".byte_array => "l".freeze,
+    "analogright".byte_array => "l".freeze
   }.freeze
 
   def initialize(server, port, channel)
@@ -91,11 +95,9 @@ class TwitchPlaysAKB1149
       elsif message =~ /PRIVMSG/
         chat_message = message.split(":").last.squish
 
-        if has_quit_permissions?(message) && chat_message == "stopgame"
-          quit 
-        elsif COMMAND_MAP[chat_message]
-          run_command(COMMAND_MAP[chat_message])
-        end
+        quit if has_quit_permissions?(message) && chat_message == "stopgame"
+
+        run_command(COMMAND_MAP[chat_message.bytes.to_a]) if COMMAND_MAP[chat_message.bytes.to_a]
 
         log.puts "[#{Time.now}] #{message}"
       else
